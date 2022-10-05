@@ -1,0 +1,29 @@
+#alertMessage {
+    margin: 8px;
+}
+
+#sideNavMaps > * {
+    padding-top: 8px;
+}
+
+#mainMap {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#hourButtons {
+    margin: auto;
+}
+
+#mainMap > * {
+    padding-top: 8px;
+}
+
+#loadingSpinner {
+    min-width: auto;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
