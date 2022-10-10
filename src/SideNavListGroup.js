@@ -16,9 +16,9 @@ class SideNavListGroup extends React.Component {
             return (
                 <ListGroup.Item
                     action
-                    active={this.props.activeItem === values.filename}
-                    key={values.filename}
-                    onClick={() => this.onClickListItem(values.filename)} >
+                    active={this.props.activeItem === values.value}
+                    key={values.value}
+                    onClick={() => this.onClickListItem(values.value)} >
                     {values.name}
                 </ListGroup.Item>
             )

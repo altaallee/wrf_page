@@ -4,11 +4,11 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SideNavMaps from './SideNavMaps';
-import MainMap from './MainMap';
+import MapPannel from './MapPannel';
 import Alert from 'react-bootstrap/Alert';
 import Loading from './Loading';
 
-class MapViewer extends React.Component {
+class MapApp extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -106,8 +106,8 @@ class MapViewer extends React.Component {
                     if (status >= 200 && status < 400) {
                         this.setState({
                             initTimes: xhr.response,
-                            currentTime: dt.datetime.strptime(xhr.response[0].filename, "%Y%m%d%H"),
-                            initTime: dt.datetime.strptime(xhr.response[0].filename, "%Y%m%d%H"),
+                            currentTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
+                            initTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
                         })
                         resolve()
                     } else {
@@ -131,76 +131,75 @@ class MapViewer extends React.Component {
 
     products = {
         "Surface": [
-            { name: "2-m Temperature", filename: "T2M" },
-            { name: "2-m Apparent Temperature", filename: "TA2M" },
-            { name: "2-m Dew Point", filename: "DPT2M" },
-            { name: "10-m Wind", filename: "WIND10M" },
-            { name: "2-m Relative Humidity", filename: "RH2M" },
+            { name: "2-m Temperature", value: "T2M" },
+            { name: "2-m Apparent Temperature", value: "TA2M" },
+            { name: "2-m Dew Point", value: "DPT2M" },
+            { name: "10-m Wind", value: "WIND10M" },
+            { name: "2-m Relative Humidity", value: "RH2M" },
         ],
         "Precipitation": [
-            { name: "1-hr Precipitation", filename: "QPF1H" },
-            { name: "Total Precipitation", filename: "QPF" },
-            { name: "Composite Reflectivity", filename: "DBZCOMP" },
-            { name: "1km Reflectivity", filename: "DBZ1KM" },
-            { name: "Precipitable Water", filename: "PWAT" },
-            { name: "Integrated Vapor Transport", filename: "IVT" },
+            { name: "1-hr Precipitation", value: "QPF1H" },
+            { name: "Total Precipitation", value: "QPF" },
+            { name: "Composite Reflectivity", value: "DBZCOMP" },
+            { name: "1km Reflectivity", value: "DBZ1KM" },
+            { name: "Precipitable Water", value: "PWAT" },
+            { name: "Integrated Vapor Transport", value: "IVT" },
         ],
         "Upper Air Dynamics": [
-            { name: "500mb Vertical Velocity", filename: "OMEGA500" },
-            { name: "700mb Vertical Velocity", filename: "OMEGA700" },
-            { name: "850mb Vertical Velocity", filename: "OMEGA850" },
-            { name: "500mb Vorticity", filename: "VORT500" },
-            { name: "700mb Vorticity", filename: "VORT700" },
-            { name: "850mb Vorticity", filename: "VORT850" },
+            { name: "500mb Vertical Velocity", value: "OMEGA500" },
+            { name: "700mb Vertical Velocity", value: "OMEGA700" },
+            { name: "850mb Vertical Velocity", value: "OMEGA850" },
+            { name: "500mb Vorticity", value: "VORT500" },
+            { name: "700mb Vorticity", value: "VORT700" },
+            { name: "850mb Vorticity", value: "VORT850" },
         ],
         "Upper Air Wind": [
-            { name: "250mb Wind", filename: "WIND250" },
-            { name: "500mb Wind", filename: "WIND500" },
-            { name: "700mb Wind", filename: "WIND700" },
-            { name: "850mb Wind", filename: "WIND850" },
-            { name: "925mb Wind", filename: "WIND925" },
+            { name: "250mb Wind", value: "WIND250" },
+            { name: "500mb Wind", value: "WIND500" },
+            { name: "700mb Wind", value: "WIND700" },
+            { name: "850mb Wind", value: "WIND850" },
+            { name: "925mb Wind", value: "WIND925" },
         ],
         "Upper Air Temperature": [
-            // { name: "", filename: "" },
-            { name: "500mb Temperature", filename: "T500" },
-            { name: "700mb Temperature", filename: "T700" },
-            { name: "850mb Temperature", filename: "T850" },
-            { name: "925mb Temperature", filename: "T925" },
+            { name: "500mb Temperature", value: "T500" },
+            { name: "700mb Temperature", value: "T700" },
+            { name: "850mb Temperature", value: "T850" },
+            { name: "925mb Temperature", value: "T925" },
         ],
         "Upper Air Moisture": [
-            { name: "250mb Relative Humidity", filename: "RH250" },
-            { name: "500mb Relative Humidity", filename: "RH500" },
-            { name: "700mb Relative Humidity", filename: "RH700" },
-            { name: "850mb Relative Humidity", filename: "RH850" },
-            { name: "925mb Relative Humidity", filename: "RH925" },
+            { name: "250mb Relative Humidity", value: "RH250" },
+            { name: "500mb Relative Humidity", value: "RH500" },
+            { name: "700mb Relative Humidity", value: "RH700" },
+            { name: "850mb Relative Humidity", value: "RH850" },
+            { name: "925mb Relative Humidity", value: "RH925" },
         ],
         "Cloud Cover": [
-            { name: "High Cloud Cover", filename: "CLOUDCOVERHIGH" },
-            { name: "Mid Cloud Cover", filename: "CLOUDCOVERMID" },
-            { name: "Low Cloud Cover", filename: "CLOUDCOVERLOW" },
+            { name: "High Cloud Cover", value: "CLOUDCOVERHIGH" },
+            { name: "Mid Cloud Cover", value: "CLOUDCOVERMID" },
+            { name: "Low Cloud Cover", value: "CLOUDCOVERLOW" },
         ],
         "Severe": [
-            { name: "Surface Based CAPE", filename: "CAPESFC" },
-            { name: "Most Unstable CAPE", filename: "CAPEMU" },
-            { name: "Surface Based CIN", filename: "CINSFC" },
-            { name: "700-500mb Lapse Rate", filename: "LR700500" },
+            { name: "Surface Based CAPE", value: "CAPESFC" },
+            { name: "Most Unstable CAPE", value: "CAPEMU" },
+            { name: "Surface Based CIN", value: "CINSFC" },
+            { name: "700-500mb Lapse Rate", value: "LR700500" },
         ],
         "Winter": [
-            { name: "1-hr Snowfall", filename: "SNOW1H" },
-            { name: "Total Snowfall", filename: "SNOWTOTAL" },
-            { name: "Snow Depth", filename: "SNOWDEPTH" },
+            { name: "1-hr Snowfall", value: "SNOW1H" },
+            { name: "Total Snowfall", value: "SNOWTOTAL" },
+            { name: "Snow Depth", value: "SNOWDEPTH" },
         ],
         "Radiation": [
-            { name: "Outgoing Longwave Radiation", filename: "OLR" },
-            { name: "Surface Downward Shortwave Radiation", filename: "SWDOWN" },
+            { name: "Outgoing Longwave Radiation", value: "OLR" },
+            { name: "Surface Downward Shortwave Radiation", value: "SWDOWN" },
         ],
     }
 
     domains = [
-        { name: "New Zealand", filename: "nz" },
-        { name: "North Island", filename: "north_island" },
-        { name: "South Island", filename: "south_island" },
-        { name: "Auckland", filename: "auckland" },
+        { name: "New Zealand", value: "nz" },
+        { name: "North Island", value: "north_island" },
+        { name: "South Island", value: "south_island" },
+        { name: "Auckland", value: "auckland" },
     ]
 
     render() {
@@ -220,7 +219,7 @@ class MapViewer extends React.Component {
                                 onProductClick={this.onProductClick} />
                         </Col>
                         <Col xl={9}>
-                            <MainMap
+                            <MapPannel
                                 minFcstHour={this.state.minFcstHour}
                                 maxFcstHour={this.state.maxFcstHour}
                                 fcstHour={this.state.fcstHour}
@@ -251,4 +250,4 @@ class MapViewer extends React.Component {
     }
 }
 
-export default MapViewer;
+export default MapApp;

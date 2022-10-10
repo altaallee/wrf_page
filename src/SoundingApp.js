@@ -4,11 +4,11 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SideNavSoundings from './SideNavSoundings';
-import MainSounding from './MainSounding';
+import MainSounding from './SoundingPannel';
 import Alert from 'react-bootstrap/Alert';
 import Loading from './Loading';
 
-class SoundingViewer extends React.Component {
+class SoundingApp extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -98,8 +98,8 @@ class SoundingViewer extends React.Component {
                     if (status >= 200 && status < 400) {
                         this.setState({
                             initTimes: xhr.response,
-                            currentTime: dt.datetime.strptime(xhr.response[0].filename, "%Y%m%d%H"),
-                            initTime: dt.datetime.strptime(xhr.response[0].filename, "%Y%m%d%H"),
+                            currentTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
+                            initTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
                         })
                         resolve()
                     } else {
@@ -122,8 +122,8 @@ class SoundingViewer extends React.Component {
     }
 
     stations = [
-        { name: "Auckland", filename: "Auckland" },
-        { name: "Christchurch", filename: "Christchurch" },
+        { name: "Auckland", value: "Auckland" },
+        { name: "Christchurch", value: "Christchurch" },
     ]
 
     render() {
@@ -170,4 +170,4 @@ class SoundingViewer extends React.Component {
     }
 }
 
-export default SoundingViewer;
+export default SoundingApp;

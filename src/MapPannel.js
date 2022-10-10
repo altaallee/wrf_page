@@ -3,10 +3,10 @@ import Slider from './Slider';
 import HourButtons from './HourButtons';
 import ImageDisplay from './ImageDisplay';
 
-class MainMap extends React.Component {
+class MapPannel extends React.Component {
     render() {
         return (
-            <div id="mainMap">
+            <div id="mapPannel">
                 <Slider
                     min={this.props.minFcstHour}
                     max={this.props.maxFcstHour}
@@ -27,4 +27,4 @@ class MainMap extends React.Component {
     }
 }
 
-export default MainMap;
+export default MapPannel;

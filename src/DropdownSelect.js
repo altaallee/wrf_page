@@ -15,8 +15,8 @@ class DropdownSelect extends React.Component {
         const formItems = this.props.items.map((values) => {
             return (
                 <option
-                    value={values.filename}
-                    key={values.filename} >
+                    value={values.value}
+                    key={values.value} >
                     {values.name}
                 </option>)
         })
