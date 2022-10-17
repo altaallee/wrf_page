@@ -10,7 +10,7 @@ class Header extends React.Component {
                 <Container fluid>
                     <Navbar.Brand href="/">
                         <img
-                            src="https://cdn.discordapp.com/emojis/567684405527838720.webp?size=48&quality=lossless"
+                            src="jerry.png"
                             width="30"
                             height="30"
                             className="d-inline-block align-top"
