@@ -1,5 +1,5 @@
 import React from 'react';
-import Form from 'react-bootstrap/Form';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 class DropdownSelect extends React.Component {
     constructor(props) {
@@ -8,24 +8,30 @@ class DropdownSelect extends React.Component {
     }
 
     onClickDropdownItem(e) {
-        this.props.onClickDropdownItem(e.target.value)
+        this.props.onClickDropdownItem(e)
     }
 
     render() {
-        const formItems = this.props.items.map((values) => {
+        const dropdownItems = this.props.items.map((values) => {
             return (
-                <option
-                    value={values.value}
-                    key={values.value} >
+                <Dropdown.Item
+                    active={this.props.activeItem === values.name}
+                    as="button"
+                    onClick={() => this.onClickDropdownItem(values)}
+                    key={values.name}>
                     {values.name}
-                </option>)
+                </Dropdown.Item>
+            )
         })
         return (
-            <div>
-                <Form.Select onChange={(e) => this.onClickDropdownItem(e)}>
-                    {formItems}
-                </Form.Select>
-            </div>
+            <Dropdown>
+                <Dropdown.Toggle>
+                    {this.props.activeItem}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                    {dropdownItems}
+                </Dropdown.Menu>
+            </Dropdown>
         )
     }
 }
