@@ -5,16 +5,14 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SideNavSoundings from './SideNavSoundings';
 import MainSounding from './SoundingPannel';
-import Alert from 'react-bootstrap/Alert';
+import AlertMessage from './AlertMessage';
 import Loading from './Loading';
 
 class SoundingApp extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            station: "Auckland",
             minFcstHour: 0,
-            maxFcstHour: 48,
             fcstStep: 1,
             fcstHour: 0,
         }
@@ -27,20 +25,22 @@ class SoundingApp extends React.Component {
         this.onLastHourClick = this.onLastHourClick.bind(this)
     }
 
-    onInitTimeClick(initTime) {
-        const newInitTime = dt.datetime.strptime(initTime, "%Y%m%d%H")
+    onInitTimeClick(values) {
+        const newInitTime = dt.datetime.strptime(values.value, "%Y%m%d%H")
         this.setState({
-            initTime: newInitTime
+            initTime: newInitTime,
+            currentInit: values.name,
+            maxFcstHour: values.fcsthours
         })
         if (newInitTime > this.state.currentTime) {
             this.setState({
                 fcstHour: 0,
                 currentTime: newInitTime
             })
-        } else if (dt.datetime(newInitTime + dt.timedelta({ hours: this.state.maxFcstHour })) < this.state.currentTime) {
+        } else if (dt.datetime(newInitTime + dt.timedelta({ hours: values.fcsthours })) < this.state.currentTime) {
             this.setState({
-                fcstHour: this.state.maxFcstHour,
-                currentTime: dt.datetime(newInitTime + dt.timedelta({ hours: this.state.maxFcstHour }))
+                fcstHour: values.fcsthours,
+                currentTime: dt.datetime(newInitTime + dt.timedelta({ hours: values.fcsthours }))
             })
         } else {
             this.setState({
@@ -49,9 +49,9 @@ class SoundingApp extends React.Component {
         }
     }
 
-    onStationClick(station) {
+    onStationClick(values) {
         this.setState({
-            station: station
+            station: values.value
         })
     }
 
@@ -88,7 +88,7 @@ class SoundingApp extends React.Component {
     }
 
     loadData() {
-        let promise_data = new Promise((resolve, reject) => {
+        let promise_init_data = new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest()
             xhr.open("GET", "http://127.0.0.1:8000/wrf/times")
             xhr.responseType = "json"
@@ -100,6 +100,8 @@ class SoundingApp extends React.Component {
                             initTimes: xhr.response,
                             currentTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
                             initTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
+                            currentInit: xhr.response[0].name,
+                            maxFcstHour: xhr.response[0].fcsthours
                         })
                         resolve()
                     } else {
@@ -110,9 +112,36 @@ class SoundingApp extends React.Component {
             xhr.send()
         })
 
-        promise_data.then(() => { }).catch(() => {
+        promise_init_data.then(() => { }).catch(() => {
             this.setState({
-                dataReadFail: true
+                initDataReadFail: true
+            })
+        })
+
+        let promise_station_data = new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest()
+            xhr.open("GET", "http://127.0.0.1:8000/wrf/stations")
+            xhr.responseType = "json"
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var status = xhr.status;
+                    if (status >= 200 && status < 400) {
+                        this.setState({
+                            stations: xhr.response,
+                            station: xhr.response[0].value
+                        })
+                        resolve()
+                    } else {
+                        reject()
+                    }
+                }
+            }
+            xhr.send()
+        })
+
+        promise_station_data.then(() => { }).catch(() => {
+            this.setState({
+                stationDataReadFail: true
             })
         })
     }
@@ -121,21 +150,17 @@ class SoundingApp extends React.Component {
         this.loadData()
     }
 
-    stations = [
-        { name: "Auckland", value: "Auckland" },
-        { name: "Christchurch", value: "Christchurch" },
-    ]
-
     render() {
-        if (this.state.currentTime & this.state.initTime) {
+        if (this.state.currentTime && this.state.station) {
             return (
                 <Container fluid>
                     <Row>
                         <Col xl={3}>
                             <SideNavSoundings
                                 initTimes={this.state.initTimes}
+                                currentInit={this.state.currentInit}
                                 onInitTimeClick={this.onInitTimeClick}
-                                stations={this.stations}
+                                stations={this.state.stations}
                                 station={this.state.station}
                                 onStationClick={this.onStationClick} />
                         </Col>
@@ -156,11 +181,13 @@ class SoundingApp extends React.Component {
                     </Row>
                 </Container>
             )
-        } else if (this.state.dataReadFail) {
+        } else if (this.state.initDataReadFail) {
             return (
-                <Alert id="alertMessage" variant="danger">
-                    Failed to get model init times.
-                </Alert>
+                <AlertMessage message="Failed to get model run data." />
+            )
+        } else if (this.state.stationDataReadFail) {
+            return (
+                <AlertMessage message="Failed to get station data." />
             )
         } else {
             return (

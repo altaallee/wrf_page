@@ -5,17 +5,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SideNavMaps from './SideNavMaps';
 import MapPannel from './MapPannel';
-import Alert from 'react-bootstrap/Alert';
 import Loading from './Loading';
+import AlertMessage from './AlertMessage';
 
 class MapApp extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            domain: "nz",
             product: "T2M",
             minFcstHour: 0,
-            maxFcstHour: 48,
             fcstStep: 1,
             fcstHour: 0,
         }
@@ -29,20 +27,22 @@ class MapApp extends React.Component {
         this.onLastHourClick = this.onLastHourClick.bind(this)
     }
 
-    onInitTimeClick(initTime) {
-        const newInitTime = dt.datetime.strptime(initTime, "%Y%m%d%H")
+    onInitTimeClick(values) {
+        const newInitTime = dt.datetime.strptime(values.value, "%Y%m%d%H")
         this.setState({
-            initTime: newInitTime
+            initTime: newInitTime,
+            currentInit: values.name,
+            maxFcstHour: values.fcsthours
         })
         if (newInitTime > this.state.currentTime) {
             this.setState({
                 fcstHour: 0,
                 currentTime: newInitTime
             })
-        } else if (dt.datetime(newInitTime + dt.timedelta({ hours: this.state.maxFcstHour })) < this.state.currentTime) {
+        } else if (dt.datetime(newInitTime + dt.timedelta({ hours: values.fcsthours })) < this.state.currentTime) {
             this.setState({
-                fcstHour: this.state.maxFcstHour,
-                currentTime: dt.datetime(newInitTime + dt.timedelta({ hours: this.state.maxFcstHour }))
+                fcstHour: values.fcsthours,
+                currentTime: dt.datetime(newInitTime + dt.timedelta({ hours: values.fcsthours }))
             })
         } else {
             this.setState({
@@ -51,15 +51,15 @@ class MapApp extends React.Component {
         }
     }
 
-    onDomainClick(domain) {
+    onDomainClick(values) {
         this.setState({
-            domain: domain
+            domain: values.value
         })
     }
 
-    onProductClick(product) {
+    onProductClick(values) {
         this.setState({
-            product: product
+            product: values.value
         })
     }
 
@@ -96,7 +96,7 @@ class MapApp extends React.Component {
     }
 
     loadData() {
-        let promise_data = new Promise((resolve, reject) => {
+        let promise_init_data = new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest()
             xhr.open("GET", "http://127.0.0.1:8000/wrf/times")
             xhr.responseType = "json"
@@ -108,6 +108,8 @@ class MapApp extends React.Component {
                             initTimes: xhr.response,
                             currentTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
                             initTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
+                            currentInit: xhr.response[0].name,
+                            maxFcstHour: xhr.response[0].fcsthours
                         })
                         resolve()
                     } else {
@@ -118,9 +120,36 @@ class MapApp extends React.Component {
             xhr.send()
         })
 
-        promise_data.then(() => { }).catch(() => {
+        promise_init_data.then(() => { }).catch(() => {
             this.setState({
-                dataReadFail: true
+                initDataReadFail: true
+            })
+        })
+
+        let promise_domain_data = new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest()
+            xhr.open("GET", "http://127.0.0.1:8000/wrf/domains")
+            xhr.responseType = "json"
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var status = xhr.status;
+                    if (status >= 200 && status < 400) {
+                        this.setState({
+                            domains: xhr.response,
+                            domain: xhr.response[0].value
+                        })
+                        resolve()
+                    } else {
+                        reject()
+                    }
+                }
+            }
+            xhr.send()
+        })
+
+        promise_domain_data.then(() => { }).catch(() => {
+            this.setState({
+                domainDataReadFail: true
             })
         })
     }
@@ -195,23 +224,17 @@ class MapApp extends React.Component {
         ],
     }
 
-    domains = [
-        { name: "New Zealand", value: "nz" },
-        { name: "North Island", value: "north_island" },
-        { name: "South Island", value: "south_island" },
-        { name: "Auckland", value: "auckland" },
-    ]
-
     render() {
-        if (this.state.currentTime & this.state.initTime) {
+        if (this.state.currentInit && this.state.domain) {
             return (
                 <Container fluid>
                     <Row>
                         <Col xl={3}>
                             <SideNavMaps
                                 initTimes={this.state.initTimes}
+                                currentInit={this.state.currentInit}
                                 onInitTimeClick={this.onInitTimeClick}
-                                domains={this.domains}
+                                domains={this.state.domains}
                                 domain={this.state.domain}
                                 onDomainClick={this.onDomainClick}
                                 products={this.products}
@@ -236,15 +259,17 @@ class MapApp extends React.Component {
                     </Row>
                 </Container>
             )
-        } else if (this.state.dataReadFail) {
+        } else if (this.state.initDataReadFail) {
             return (
-                <Alert id="alertMessage" variant="danger">
-                    Failed to get model init times.
-                </Alert>
+                <AlertMessage message="Failed to get model run data." />
+            )
+        } else if (this.state.domainDataReadFail) {
+            return (
+                <AlertMessage message="Failed to get domain data." />
             )
         } else {
             return (
-                <Loading />
+                <Loading />             
             )
         }
     }
