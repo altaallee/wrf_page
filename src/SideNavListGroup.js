@@ -7,8 +7,8 @@ class SideNavListGroup extends React.Component {
         this.onClickListItem = this.onClickListItem.bind(this)
     }
 
-    onClickListItem(key) {
-        this.props.onClickListItem(key)
+    onClickListItem(values) {
+        this.props.onClickListItem(values)
     }
 
     render() {
@@ -18,7 +18,7 @@ class SideNavListGroup extends React.Component {
                     action
                     active={this.props.activeItem === values.value}
                     key={values.value}
-                    onClick={() => this.onClickListItem(values.value)} >
+                    onClick={() => this.onClickListItem(values)} >
                     {values.name}
                 </ListGroup.Item>
             )
