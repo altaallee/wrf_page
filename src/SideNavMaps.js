@@ -9,6 +9,7 @@ class SideNavMaps extends React.Component {
             <div id="sideNavMaps">
                 <DropdownSelect
                     items={this.props.initTimes}
+                    activeItem={this.props.currentInit}
                     onClickDropdownItem={this.props.onInitTimeClick} />
                 <SideNavListGroup
                     items={this.props.domains}
