@@ -10,6 +10,7 @@ class MapPannel extends React.Component {
                 <Slider
                     min={this.props.minFcstHour}
                     max={this.props.maxFcstHour}
+                    step={this.props.fcstStep}
                     value={this.props.fcstHour}
                     onChangeSlider={this.props.onChangeFcstSlider} />
                 <HourButtons

@@ -16,6 +16,7 @@ class Slider extends React.Component {
             <Form.Range
                 min={this.props.min}
                 max={this.props.max}
+                step={this.props.step}
                 value={this.props.value}
                 onChange={(e) => this.onChangeSlider(e)} />
         )
