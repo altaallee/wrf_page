@@ -13,7 +13,6 @@ class SoundingApp extends React.Component {
         super(props)
         this.state = {
             minFcstHour: 0,
-            fcstStep: 1,
             fcstHour: 0,
         }
         this.onInitTimeClick = this.onInitTimeClick.bind(this)
@@ -50,8 +49,12 @@ class SoundingApp extends React.Component {
     }
 
     onStationClick(values) {
+        const newFcstHour = Math.round(this.state.fcstHour / values.freq) * values.freq
         this.setState({
-            station: values.value
+            station: values.value,
+            fcstStep: values.freq,
+            fcstHour: newFcstHour,
+            currentTime: dt.datetime(this.state.initTime + dt.timedelta({ hours: newFcstHour }))
         })
     }
 
@@ -128,7 +131,8 @@ class SoundingApp extends React.Component {
                     if (status >= 200 && status < 400) {
                         this.setState({
                             stations: xhr.response,
-                            station: xhr.response[0].value
+                            station: xhr.response[0].value,
+                            fcstStep: xhr.response[0].freq
                         })
                         resolve()
                     } else {
@@ -168,9 +172,10 @@ class SoundingApp extends React.Component {
                             <MainSounding
                                 minFcstHour={this.state.minFcstHour}
                                 maxFcstHour={this.state.maxFcstHour}
+                                fcstStep={this.state.fcstStep}
                                 fcstHour={this.state.fcstHour}
                                 onChangeFcstSlider={this.onChangeFcstSlider}
-                                currentTime={this.state.currentTime.strftime("%Y%m%d%H")}
+                                currentTime={this.state.currentTime.strftime("%Y%m%d%H%M")}
                                 initTime={this.state.initTime.strftime("%Y%m%d%H")}
                                 onFirstHourClick={this.onFirstHourClick}
                                 onPreviousHourClick={this.onPreviousHourClick}
