@@ -10,6 +10,7 @@ class SoundingPannel extends React.Component {
                 <Slider
                     min={this.props.minFcstHour}
                     max={this.props.maxFcstHour}
+                    step={this.props.fcstStep}
                     value={this.props.fcstHour}
                     onChangeSlider={this.props.onChangeFcstSlider} />
                 <HourButtons
@@ -21,7 +22,7 @@ class SoundingPannel extends React.Component {
                     onNextHourClick={this.props.onNextHourClick}
                     onLastHourClick={this.props.onLastHourClick} />
                 <ImageDisplay
-                    src={"/model_images/images/" + this.props.initTime + "/skewt_" + this.props.station + "_" + this.props.currentTime + ".png"} />
+                    src={"/model_images/images/" + this.props.initTime + "/skewt/" + this.props.station + "/skewt_" + this.props.station + "_" + this.props.currentTime + ".png"} />
             </div>
         )
     }
