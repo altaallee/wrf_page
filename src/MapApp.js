@@ -13,8 +13,9 @@ class MapApp extends React.Component {
         super(props)
         this.state = {
             product: "T2M",
+            productFreq: 0.25,
+            productMaxDom: 99,
             minFcstHour: 0,
-            fcstStep: 1,
             fcstHour: 0,
         }
         this.onInitTimeClick = this.onInitTimeClick.bind(this)
@@ -35,16 +36,19 @@ class MapApp extends React.Component {
             maxFcstHour: values.fcsthours
         })
         if (newInitTime > this.state.currentTime) {
+            // new model start time is past the current time
             this.setState({
                 fcstHour: 0,
                 currentTime: newInitTime
             })
         } else if (dt.datetime(newInitTime + dt.timedelta({ hours: values.fcsthours })) < this.state.currentTime) {
+            // new model run does not forecast up to current hour
             this.setState({
                 fcstHour: values.fcsthours,
                 currentTime: dt.datetime(newInitTime + dt.timedelta({ hours: values.fcsthours }))
             })
         } else {
+            // new model run has forecast in current hour
             this.setState({
                 fcstHour: dt.timedelta(this.state.currentTime - newInitTime).totalSeconds() / 3600
             })
@@ -52,14 +56,35 @@ class MapApp extends React.Component {
     }
 
     onDomainClick(values) {
+        const newFreq = Math.max(values.freq, this.state.productFreq)
+        const newFcstHour = Math.round(this.state.fcstHour / newFreq) * newFreq
         this.setState({
-            domain: values.value
+            domain: values.value,
+            domNum: values.domNum,
+            domainFreq: values.freq,
+            fcstStep: newFreq,
+            fcstHour: newFcstHour,
+            currentTime: dt.datetime(this.state.initTime + dt.timedelta({ hours: newFcstHour }))
         })
+        if (values.domNum > this.state.productMaxDom) {
+            this.setState({
+                product: "T2M",
+                productFreq: values.freq,
+                productMaxDom: 99,
+            })
+        }
     }
 
     onProductClick(values) {
+        const newFreq = Math.max(values.freq, this.state.domainFreq)
+        const newFcstHour = Math.round(this.state.fcstHour / newFreq) * newFreq
         this.setState({
-            product: values.value
+            product: values.value,
+            productFreq: values.freq,
+            productMaxDom: values.maxDom,
+            fcstStep: newFreq,
+            fcstHour: newFcstHour,
+            currentTime: dt.datetime(this.state.initTime + dt.timedelta({ hours: newFcstHour }))
         })
     }
 
@@ -136,7 +161,10 @@ class MapApp extends React.Component {
                     if (status >= 200 && status < 400) {
                         this.setState({
                             domains: xhr.response,
-                            domain: xhr.response[0].value
+                            domain: xhr.response[0].value,
+                            domNum: xhr.response[0].domNum,
+                            fcstStep: xhr.response[0].freq,
+                            domainFreq: xhr.response[0].freq
                         })
                         resolve()
                     } else {
@@ -152,80 +180,54 @@ class MapApp extends React.Component {
                 domainDataReadFail: true
             })
         })
+
+        let promise_product_data = new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest()
+            xhr.open("GET", "http://127.0.0.1:8000/wrf/products")
+            xhr.responseType = "json"
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var status = xhr.status;
+                    if (status >= 200 && status < 400) {
+                        this.setState({
+                            products: xhr.response
+                        })
+                        resolve()
+                    } else {
+                        reject()
+                    }
+                }
+            }
+            xhr.send()
+        })
+
+        promise_product_data.then(() => { }).catch(() => {
+            this.setState({
+                productDataReadFail: true
+            })
+        })
     }
 
     componentDidMount() {
         this.loadData()
     }
 
-    products = {
-        "Surface": [
-            { name: "2-m Temperature", value: "T2M" },
-            { name: "2-m Apparent Temperature", value: "TA2M" },
-            { name: "2-m Dew Point", value: "DPT2M" },
-            { name: "10-m Wind", value: "WIND10M" },
-            { name: "2-m Relative Humidity", value: "RH2M" },
-        ],
-        "Precipitation": [
-            { name: "1-hr Precipitation", value: "QPF1H" },
-            { name: "Total Precipitation", value: "QPF" },
-            { name: "Composite Reflectivity", value: "DBZCOMP" },
-            { name: "1km Reflectivity", value: "DBZ1KM" },
-            { name: "Precipitable Water", value: "PWAT" },
-            { name: "Integrated Vapor Transport", value: "IVT" },
-        ],
-        "Upper Air Dynamics": [
-            { name: "500mb Vertical Velocity", value: "OMEGA500" },
-            { name: "700mb Vertical Velocity", value: "OMEGA700" },
-            { name: "850mb Vertical Velocity", value: "OMEGA850" },
-            { name: "500mb Vorticity", value: "VORT500" },
-            { name: "700mb Vorticity", value: "VORT700" },
-            { name: "850mb Vorticity", value: "VORT850" },
-        ],
-        "Upper Air Wind": [
-            { name: "250mb Wind", value: "WIND250" },
-            { name: "500mb Wind", value: "WIND500" },
-            { name: "700mb Wind", value: "WIND700" },
-            { name: "850mb Wind", value: "WIND850" },
-            { name: "925mb Wind", value: "WIND925" },
-        ],
-        "Upper Air Temperature": [
-            { name: "500mb Temperature", value: "T500" },
-            { name: "700mb Temperature", value: "T700" },
-            { name: "850mb Temperature", value: "T850" },
-            { name: "925mb Temperature", value: "T925" },
-        ],
-        "Upper Air Moisture": [
-            { name: "250mb Relative Humidity", value: "RH250" },
-            { name: "500mb Relative Humidity", value: "RH500" },
-            { name: "700mb Relative Humidity", value: "RH700" },
-            { name: "850mb Relative Humidity", value: "RH850" },
-            { name: "925mb Relative Humidity", value: "RH925" },
-        ],
-        "Cloud Cover": [
-            { name: "High Cloud Cover", value: "CLOUDCOVERHIGH" },
-            { name: "Mid Cloud Cover", value: "CLOUDCOVERMID" },
-            { name: "Low Cloud Cover", value: "CLOUDCOVERLOW" },
-        ],
-        "Severe": [
-            { name: "Surface Based CAPE", value: "CAPESFC" },
-            { name: "Most Unstable CAPE", value: "CAPEMU" },
-            { name: "Surface Based CIN", value: "CINSFC" },
-            { name: "700-500mb Lapse Rate", value: "LR700500" },
-        ],
-        "Winter": [
-            { name: "1-hr Snowfall", value: "SNOW1H" },
-            { name: "Total Snowfall", value: "SNOWTOTAL" },
-            { name: "Snow Depth", value: "SNOWDEPTH" },
-        ],
-        "Radiation": [
-            { name: "Outgoing Longwave Radiation", value: "OLR" },
-            { name: "Surface Downward Shortwave Radiation", value: "SWDOWN" },
-        ],
+    getProducts() {
+        let filteredProducts = {}
+        for (const category in this.state.products) {
+            let keepProducts = []
+            for (const product in this.state.products[category]) {
+                if (this.state.products[category][product]["maxDom"] >= this.state.domNum) {
+                    keepProducts.push(this.state.products[category][product])
+                }
+            }
+            filteredProducts = Object.assign(filteredProducts, { [category]: keepProducts })
+        }
+        return (filteredProducts)
     }
 
     render() {
-        if (this.state.currentInit && this.state.domain) {
+        if (this.state.currentInit && this.state.domain && this.state.products) {
             return (
                 <Container fluid>
                     <Row>
@@ -237,7 +239,7 @@ class MapApp extends React.Component {
                                 domains={this.state.domains}
                                 domain={this.state.domain}
                                 onDomainClick={this.onDomainClick}
-                                products={this.products}
+                                products={this.getProducts()}
                                 product={this.state.product}
                                 onProductClick={this.onProductClick} />
                         </Col>
@@ -245,9 +247,10 @@ class MapApp extends React.Component {
                             <MapPannel
                                 minFcstHour={this.state.minFcstHour}
                                 maxFcstHour={this.state.maxFcstHour}
+                                fcstStep={this.state.fcstStep}
                                 fcstHour={this.state.fcstHour}
                                 onChangeFcstSlider={this.onChangeFcstSlider}
-                                currentTime={this.state.currentTime.strftime("%Y%m%d%H")}
+                                currentTime={this.state.currentTime.strftime("%Y%m%d%H%M")}
                                 initTime={this.state.initTime.strftime("%Y%m%d%H")}
                                 onFirstHourClick={this.onFirstHourClick}
                                 onPreviousHourClick={this.onPreviousHourClick}
@@ -269,7 +272,7 @@ class MapApp extends React.Component {
             )
         } else {
             return (
-                <Loading />             
+                <Loading />
             )
         }
     }
