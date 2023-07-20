@@ -22,7 +22,7 @@ class MapPannel extends React.Component {
                     onNextHourClick={this.props.onNextHourClick}
                     onLastHourClick={this.props.onLastHourClick} />
                 <ImageDisplay
-                    src={"/model_images/images/" + this.props.initTime + "/" + this.props.product + "/" + this.props.product + "_" + this.props.domain + "_" + this.props.currentTime + ".png"} />
+                    src={"/model_images/images/" + this.props.initTime + "/" + this.props.ens + "/" + this.props.product + "/" + this.props.product + "_" + this.props.domain + "_" + this.props.currentTime + ".png"} />
             </div>
         )
     }

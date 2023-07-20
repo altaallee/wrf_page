@@ -33,7 +33,8 @@ class MapApp extends React.Component {
         this.setState({
             initTime: newInitTime,
             currentInit: values.name,
-            maxFcstHour: values.fcsthours
+            maxFcstHour: values.fcsthours,
+            ens: values.ens
         })
         if (newInitTime > this.state.currentTime) {
             // new model start time is past the current time
@@ -134,7 +135,8 @@ class MapApp extends React.Component {
                             currentTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
                             initTime: dt.datetime.strptime(xhr.response[0].value, "%Y%m%d%H"),
                             currentInit: xhr.response[0].name,
-                            maxFcstHour: xhr.response[0].fcsthours
+                            maxFcstHour: xhr.response[0].fcsthours,
+                            ens: xhr.response[0].ens
                         })
                         resolve()
                     } else {
@@ -252,6 +254,7 @@ class MapApp extends React.Component {
                                 onChangeFcstSlider={this.onChangeFcstSlider}
                                 currentTime={this.state.currentTime.strftime("%Y%m%d%H%M")}
                                 initTime={this.state.initTime.strftime("%Y%m%d%H")}
+                                ens={this.state.ens}
                                 onFirstHourClick={this.onFirstHourClick}
                                 onPreviousHourClick={this.onPreviousHourClick}
                                 onNextHourClick={this.onNextHourClick}
