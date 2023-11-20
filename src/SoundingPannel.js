@@ -22,7 +22,7 @@ class SoundingPannel extends React.Component {
                     onNextHourClick={this.props.onNextHourClick}
                     onLastHourClick={this.props.onLastHourClick} />
                 <ImageDisplay
-                    src={"/model_images/images/" + this.props.initTime + "/skewt/" + this.props.station + "/skewt_" + this.props.station + "_" + this.props.currentTime + ".png"} />
+                    src={"http://127.0.0.1:8000/wrf/images?domain=" + this.props.station + "&ens=" + this.props.ens + "&fcst_date=" + this.props.currentTime + "&init_date=" + this.props.initTime + "&product=skewt"} />
             </div>
         )
     }
