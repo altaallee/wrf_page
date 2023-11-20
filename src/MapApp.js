@@ -12,7 +12,7 @@ class MapApp extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            product: "T2M",
+            product: "t2m",
             productFreq: 0.25,
             productMaxDom: 99,
             minFcstHour: 0,
