@@ -252,15 +252,11 @@ class MapApp extends React.Component {
                                 fcstStep={this.state.fcstStep}
                                 fcstHour={this.state.fcstHour}
                                 onChangeFcstSlider={this.onChangeFcstSlider}
-                                currentTime={this.state.currentTime.strftime("%Y%m%d%H%M")}
-                                initTime={this.state.initTime.strftime("%Y%m%d%H")}
-                                ens={this.state.ens}
                                 onFirstHourClick={this.onFirstHourClick}
                                 onPreviousHourClick={this.onPreviousHourClick}
                                 onNextHourClick={this.onNextHourClick}
                                 onLastHourClick={this.onLastHourClick}
-                                domain={this.state.domain}
-                                product={this.state.product} />
+                                src={"http://127.0.0.1:8000/wrf/images?domain=" + this.state.domain + "&ens=" + this.state.ens + "&fcst_date=" + this.state.currentTime.strftime("%Y%m%d%H%M") + "&init_date=" + this.state.initTime.strftime("%Y%m%d%H") + "&product=" + this.state.product} />
                         </Col>
                     </Row>
                 </Container>
