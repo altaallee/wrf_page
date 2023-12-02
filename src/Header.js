@@ -21,8 +21,8 @@ class Header extends React.Component {
                     <Navbar.Toggle />
                     <Navbar.Collapse>
                         <Nav>
-                            <Nav.Link href="/mapviewer">Maps</Nav.Link>
-                            <Nav.Link href="/soundingviewer">Soundings</Nav.Link>
+                            <Nav.Link href="/wrf">WRF</Nav.Link>
+                            <Nav.Link href="/wrfsoundings">WRF Soundings</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

@@ -5,16 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MapApp from './MapApp';
-import SoundingApp from './SoundingApp';
+import WrfApp from './WrfApp';
+import WrfSoundingApp from './WrfSoundingApp';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<App />}>
-                <Route path="/mapviewer" element={<MapApp />} />
-                <Route path="/soundingviewer" element={<SoundingApp />} />
+                <Route path="/wrf" element={<WrfApp />} />
+                <Route path="/wrfsoundings" element={<WrfSoundingApp />} />
             </Route>
         </Routes>
     </BrowserRouter>

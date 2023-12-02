@@ -8,7 +8,7 @@ import MapPannel from './MapPannel';
 import Loading from './Loading';
 import AlertMessage from './AlertMessage';
 
-class MapApp extends React.Component {
+class WrfApp extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -277,4 +277,4 @@ class MapApp extends React.Component {
     }
 }
 
-export default MapApp;
+export default WrfApp;
