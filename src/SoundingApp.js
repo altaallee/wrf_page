@@ -3,8 +3,8 @@ import { default as dt } from 'py-datetime';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import SideNavSoundings from './SideNavSoundings';
-import MainSounding from './SoundingPannel';
+import SideNavMaps from './SideNavMaps';
+import MapPannel from './MapPannel';
 import AlertMessage from './AlertMessage';
 import Loading from './Loading';
 
@@ -162,29 +162,26 @@ class SoundingApp extends React.Component {
                 <Container fluid>
                     <Row>
                         <Col xl={3}>
-                            <SideNavSoundings
+                            <SideNavMaps
                                 initTimes={this.state.initTimes}
                                 currentInit={this.state.currentInit}
                                 onInitTimeClick={this.onInitTimeClick}
-                                stations={this.state.stations}
-                                station={this.state.station}
-                                onStationClick={this.onStationClick} />
+                                domains={this.state.stations}
+                                domain={this.state.station}
+                                onDomainClick={this.onStationClick} />
                         </Col>
                         <Col xl={9}>
-                            <MainSounding
+                            <MapPannel
                                 minFcstHour={this.state.minFcstHour}
                                 maxFcstHour={this.state.maxFcstHour}
                                 fcstStep={this.state.fcstStep}
                                 fcstHour={this.state.fcstHour}
                                 onChangeFcstSlider={this.onChangeFcstSlider}
-                                currentTime={this.state.currentTime.strftime("%Y%m%d%H%M")}
-                                initTime={this.state.initTime.strftime("%Y%m%d%H")}
-                                ens={this.state.ens}
                                 onFirstHourClick={this.onFirstHourClick}
                                 onPreviousHourClick={this.onPreviousHourClick}
                                 onNextHourClick={this.onNextHourClick}
                                 onLastHourClick={this.onLastHourClick}
-                                station={this.state.station} />
+                                src={"http://127.0.0.1:8000/wrf/images?domain=" + this.state.station + "&ens=" + this.state.ens + "&fcst_date=" + this.state.currentTime.strftime("%Y%m%d%H%M") + "&init_date=" + this.state.initTime.strftime("%Y%m%d%H") + "&product=skewt"} />
                         </Col>
                     </Row>
                 </Container>

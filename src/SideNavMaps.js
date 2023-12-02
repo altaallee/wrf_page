@@ -15,10 +15,11 @@ class SideNavMaps extends React.Component {
                     items={this.props.domains}
                     activeItem={this.props.domain}
                     onClickListItem={this.props.onDomainClick} />
-                <ProductAccordian
-                    items={this.props.products}
-                    activeItem={this.props.product}
-                    onClickListItem={this.props.onProductClick} />
+                {this.props.product && 
+                    <ProductAccordian
+                        items={this.props.products}
+                        activeItem={this.props.product}
+                        onClickListItem={this.props.onProductClick} />}
             </div>
         )
     }
