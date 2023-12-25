@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import WrfApp from './WrfApp';
 import WrfSoundingApp from './WrfSoundingApp';
+import WrfTimeSeriesApp from './WrfTimeSeriesApp';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,6 +16,7 @@ root.render(
             <Route path="/" element={<App />}>
                 <Route path="/wrf" element={<WrfApp />} />
                 <Route path="/wrfsoundings" element={<WrfSoundingApp />} />
+                <Route path="/wrftimeseries" element={<WrfTimeSeriesApp />} />
             </Route>
         </Routes>
     </BrowserRouter>

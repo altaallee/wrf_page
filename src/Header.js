@@ -23,6 +23,7 @@ class Header extends React.Component {
                         <Nav>
                             <Nav.Link href="/wrf">WRF</Nav.Link>
                             <Nav.Link href="/wrfsoundings">WRF Soundings</Nav.Link>
+                            <Nav.Link href="/wrftimeseries">WRF Time Series</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
