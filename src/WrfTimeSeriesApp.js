@@ -185,6 +185,7 @@ class WrfTimeSeriesApp extends React.Component {
                     {
                         name: run.name,
                         type: "line",
+                        id: run.name,
                         colorIndex: j,
                         data: dataPairs,
                         tooltip: {
@@ -203,6 +204,7 @@ class WrfTimeSeriesApp extends React.Component {
                     {
                         name: run.name,
                         type: "line",
+                        id: run.name,
                         colorIndex: j,
                         data: dataPairs,
                         tooltip: {
@@ -221,6 +223,7 @@ class WrfTimeSeriesApp extends React.Component {
                     {
                         name: run.name,
                         type: "line",
+                        id: run.name,
                         colorIndex: j,
                         data: dataPairs,
                         tooltip: {
@@ -241,7 +244,7 @@ class WrfTimeSeriesApp extends React.Component {
                             type: "line",
                             lineWidth: 0,
                             yAxis: 1,
-                            linkedTo: ":previous",
+                            linkedTo: run.name,
                             colorIndex: j,
                             data: dataPairs2,
                             tooltip: {
@@ -267,6 +270,7 @@ class WrfTimeSeriesApp extends React.Component {
                     {
                         name: run.name,
                         type: "line",
+                        id: run.name,
                         colorIndex: j,
                         data: dataPairs,
                         tooltip: {
@@ -286,6 +290,7 @@ class WrfTimeSeriesApp extends React.Component {
                             name: run.name,
                             type: "column",
                             yAxis: 1,
+                            linkedTo: run.name,
                             showInLegend: false,
                             colorIndex: j,
                             data: dataPairs2,
@@ -306,6 +311,7 @@ class WrfTimeSeriesApp extends React.Component {
                     {
                         name: run.name,
                         type: "line",
+                        id: run.name,
                         colorIndex: j,
                         data: dataPairs,
                         tooltip: {
