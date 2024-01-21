@@ -69,7 +69,7 @@ class WrfApp extends React.Component {
         })
         if (values.domNum > this.state.productMaxDom) {
             this.setState({
-                product: "T2M",
+                product: "t2m",
                 productFreq: values.freq,
                 productMaxDom: 99,
             })
